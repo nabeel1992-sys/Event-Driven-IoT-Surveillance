@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"name": "STM32_Security_Sender",
+			"path": ".."
+		},
+		{
+			"path": "../../AI_Security_Eye_ESP32S3"
+		}
+	],
+	"settings": {}
+}
