@@ -6,7 +6,7 @@ app.eventHub('processAlert', {
     connection: 'IOTHUB_CONNECTION',
     eventHubName: 'iothub-ehub-security-h-55730615-7439d09be8',
     cardinality: 'many',
-    dataType: 'binary', // 🔥 Binary parser ko barkarar rakha gaya hai
+    dataType: 'binary', // 🔥 Binary parser 
     handler: async (messages, context) => {
         context.log(`--- Processing ${messages.length} events ---`);
 
@@ -37,14 +37,14 @@ app.eventHub('processAlert', {
                     context.log("📝 Text Alert Detected!");
                 }
 
-                // 2. Storage mein Upload (Existing Logic)
+                // 2. Storage Upload (Existing Logic)
                 const blockBlobClient = containerClient.getBlockBlobClient(fileName);
                 await blockBlobClient.upload(buffer, buffer.length, {
                     blobHTTPHeaders: { blobContentType: contentType }
                 });
                 context.log(`✅ Success: Saved ${fileName}`);
 
-                // 3. AGAR PHOTO HAI TO WHATSAPP BHEJEIN (New Logic)
+                // 3. Whatsapp Logic
                 if (isImage) {
                     const sasToken = await generateSasToken(fileName, storageConnString);
                     const imageUrl = `${blockBlobClient.url}?${sasToken}`;

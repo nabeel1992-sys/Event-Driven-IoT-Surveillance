@@ -6,10 +6,10 @@ Adafruit_MPU6050 mpu;
 
 // Variables
 float baseX = 0, baseY = 0, baseZ = 0;
-bool isLocked = false;             // Alert bhejne ke baad lock karne ke liye
-unsigned long lastAlertTime = 0;   // Waqt ka hisab rakhne ke liye
-const unsigned long COOLDOWN = 2000; // 2 seconds ka intezar (Taake spam na ho)
-const float SENSITIVITY = 3.0;     // Movement ki shiddat (m/s^2)
+bool isLocked = false;             
+unsigned long lastAlertTime = 0;   
+const unsigned long COOLDOWN = 2000; // 2 seconds waiting time to avoid spam
+const float SENSITIVITY = 3.0;     // Movement (m/s^2)
 
 void calibrate() {
   sensors_event_t a, g, temp;
@@ -32,7 +32,7 @@ void setup() {
 
   Serial.println("Initial Calibration... Do not move.");
   delay(2000); 
-  calibrate(); // Shuruati position save karein
+  calibrate(); // Initial position saved
 }
 
 void loop() {
@@ -48,21 +48,21 @@ void loop() {
     float diffZ = abs(a.acceleration.z - baseZ);
 
     if (diffX > SENSITIVITY || diffY > SENSITIVITY || diffZ > SENSITIVITY) {
-      // 1. Alert Bhejein
+      // 1. Send Alert
       Serial1.println("TILT_ALERT");
       Serial.println("ALERT: Motion Detected! Sending to ESP32S3...");
       
-      // 2. System ko lock karein aur waqt note karein
+      // 2. System lock and note the time
       isLocked = true;
       lastAlertTime = currentTime;
     }
   } 
   else {
-    // Agar 10 seconds guzar gaye hain
+    // Agar 3 seconds 
     if (currentTime - lastAlertTime > COOLDOWN) {
       Serial.println("Cooldown finished. Setting new baseline...");
-      calibrate();  // Nayi position ko "Zero" set karein
-      isLocked = false; // Lock khol dein
+      calibrate();  // "Zero" set position
+      isLocked = false; 
     }
   }
 

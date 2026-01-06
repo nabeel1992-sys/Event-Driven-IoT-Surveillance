@@ -24,7 +24,7 @@ static const char *IOTHUB_HOST = "YOUR_IOTHUB_NAME.azure-devices.net";
 static const char *DEVICE_ID   = "ESP32_S3_Cam";
 static const char *MQTT_PASSWORD_SAS = "YOUR_AZURE_SAS_TOKEN";
 
-// --- GoooouuTech Pins (image_84b58c.jpg) ---
+// --- GoooouuTech Pins ---
 #define XCLK_GPIO_NUM  15 
 #define SIOD_GPIO_NUM  4 
 #define SIOC_GPIO_NUM  5 
@@ -50,7 +50,7 @@ static EventGroupHandle_t wifi_event_group;
 static esp_mqtt_client_handle_t mqtt_client = NULL;
 static esp_netif_t* sta_netif = NULL; 
 
-// --- 1. WiFi Logic (Fixes 0x103 Crash) ---
+// --- 1. WiFi Logic ---
 static void wifi_event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) esp_wifi_connect();
     else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
@@ -78,7 +78,7 @@ static void init_wifi(void) {
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
 }
 
-// --- 2. Camera Logic (Fixes 0x106 Detection) ---
+// --- 2. Camera Logic ---
 static esp_err_t init_camera() {
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
@@ -152,7 +152,7 @@ void app_main(void) {
         ESP_LOGI(TAG, "Camera Initialized! ✅");
     }
 
-    // C. WiFi & MQTT (IP milne ke baad MQTT shuru hoga)
+    // C. WiFi & MQTT (After IP initialization, MQTT will start)
     init_wifi(); 
     ESP_LOGI(TAG, "Starting MQTT...");
     start_mqtt();
